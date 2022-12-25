@@ -17,6 +17,8 @@ defmodule Pento.Accounts.UserNotifier do
     end
   end
 
+  @spec deliver_confirmation_instructions(atom | %{:email => any, optional(any) => any}, any) ::
+          {:error, any} | {:ok, Swoosh.Email.t()}
   @doc """
   Deliver instructions to confirm account.
   """

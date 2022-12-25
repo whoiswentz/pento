@@ -1,12 +1,13 @@
 defmodule PentoWeb.WrongLive do
   use Phoenix.LiveView, layout: {PentoWeb.LayoutView, "live.html"}
 
-  def mount(_params, _session, socket) do
+  def mount(_params, session, socket) do
     {:ok,
      assign(socket,
        number: to_string(Enum.random(1..10)),
        score: 0,
-       message: "Make a guess:"
+       message: "Make a guess:",
+       session_id: session["live_socket_id"]
      )}
   end
 
@@ -59,6 +60,10 @@ defmodule PentoWeb.WrongLive do
         </a>
       <% end %>
     </h2>
+    <pre>
+      <%= @current_user.email %>
+      <%= @session_id %>
+    </pre>
     <button type="submit" phx-click="restart">
       Restart
     </button>
