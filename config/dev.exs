@@ -57,7 +57,7 @@ config :pento, PentoWeb.Endpoint,
 config :pento, PentoWeb.Endpoint,
   live_reload: [
     patterns: [
-      ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
+      ~r"priv/static/[^uploads].*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
       ~r"lib/pento_web/(live|views)/.*(ex)$",
       ~r"lib/pento_web/templates/.*(eex)$"
