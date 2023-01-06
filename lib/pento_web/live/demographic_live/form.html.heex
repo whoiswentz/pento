@@ -1,0 +1,21 @@
+<div>
+  <.form
+    let={f}
+    for={@changeset}
+    phx-change="validate"
+    phx-submit="save"
+    id={@id}
+    phx-target={@myself}>
+    <%= hidden_input f, :user_id %>
+
+    <%= label f, :gender %>
+    <%= select f, :gender, ["female", "male", "other", "prefer not to say"] %>
+    <%= error_tag f, :gender %>
+
+    <%= label f, :year_of_birth %>
+    <%= select f, :year_of_birth, Enum.reverse(1900..DateTime.utc_now().year) %>
+    <%= error_tag f, :year_of_birth %>
+
+    <%= submit "Save", phx_disable_with: "Saving..." %>
+  </.form>
+</div>
