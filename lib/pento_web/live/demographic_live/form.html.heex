@@ -12,6 +12,11 @@
     <%= select f, :gender, ["female", "male", "other", "prefer not to say"] %>
     <%= error_tag f, :gender %>
 
+    <%= label f, :education %>
+    <%= select f, :education, ["high school", "bachelor's degree", "graduate
+degree", "other", "prefer not to say"] %>
+    <%= error_tag f, :education %>
+
     <%= label f, :year_of_birth %>
     <%= select f, :year_of_birth, Enum.reverse(1900..DateTime.utc_now().year) %>
     <%= error_tag f, :year_of_birth %>
