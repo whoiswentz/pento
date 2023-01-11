@@ -1,0 +1,9 @@
+<div class="user-activity-component">
+  <h2>Number of users taking survey</h2>
+  <div>
+    <%= for {action, total} <- @total_user_taking_survey do %>
+      <h3><%= action %></h3>
+      <ul><%= total %></ul>
+    <% end %>
+  </div>
+</div>
