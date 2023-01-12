@@ -70,14 +70,14 @@ defmodule PentoWeb.Admin.SurveyResultsLive do
     socket |> assign(:gender_group_filter, gender_group_filter)
   end
 
-  defp assign_products_with_average_ratings(
-         %{
-           assigns: %{
-             age_group_filter: age_group_filter,
-             gender_group_filter: gender_group_filter
-           }
-         } = socket
-       ) do
+  def assign_products_with_average_ratings(
+        %{
+          assigns: %{
+            age_group_filter: age_group_filter,
+            gender_group_filter: gender_group_filter
+          }
+        } = socket
+      ) do
     socket
     |> assign(
       :products_with_average_ratings,

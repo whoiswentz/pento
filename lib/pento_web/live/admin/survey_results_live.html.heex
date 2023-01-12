@@ -1,5 +1,18 @@
 <div>
-  <.form for={:age_group_filter} phx-change="age_group_filter", phx-target={@myself} id={@id}>
+<.form for={:gender_group_filter} phx-change="gender_group_filter", phx-target={@myself} id="gender_group_filter-group-form">
+    <label>Filter by gender group:</label>
+    <select name="gender_group_filter" id="gender_group_filter">
+      <%= for gender_group <- ["male", "female", "other", "prefer not to say"] do %>
+        <option
+          value={gender_group}
+          selected={@gender_group_filter == gender_group} >
+            <%=gender_group%>
+        </option>
+      <% end %>
+    </select>
+  </.form>
+
+  <.form for={:age_group_filter} phx-change="age_group_filter", phx-target={@myself} id="age-group-form">
     <label>Filter by age group:</label>
     <select name="age_group_filter" id="age_group_filter">
       <%= for age_group <- ["all", "18 and under", "18 to 25", "25 to 35", "35 and up"] do %>

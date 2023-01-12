@@ -4,7 +4,7 @@ defmodule Pento.Survey.Demographic do
 
   alias Pento.Accounts.User
 
-  @attrs [:gender, :year_of_birth, :user_id, :education]
+  @attrs [:gender, :year_of_birth, :user_id]
 
   schema "demographics" do
     field :gender, :string

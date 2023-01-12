@@ -11,8 +11,9 @@ defmodule Pento.SurveyFixtures do
     {:ok, demographic} =
       attrs
       |> Enum.into(%{
-        gender: "some gender",
-        year_of_birth: 42
+        gender: "male",
+        year_of_birth: 1993,
+        education: "graduate"
       })
       |> Pento.Survey.create_demographic()
 
@@ -26,7 +27,7 @@ defmodule Pento.SurveyFixtures do
     {:ok, rating} =
       attrs
       |> Enum.into(%{
-        stars: 42
+        stars: 5
       })
       |> Pento.Survey.create_rating()
 
