@@ -60,7 +60,6 @@ defmodule PentoWeb.UserSettingsControllerTest do
   end
 
   describe "PUT /users/settings (change email form)" do
-    @tag :capture_log
     test "updates the user email", %{conn: conn, user: user} do
       conn =
         put(conn, Routes.user_settings_path(conn, :update), %{

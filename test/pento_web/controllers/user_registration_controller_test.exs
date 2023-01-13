@@ -19,7 +19,6 @@ defmodule PentoWeb.UserRegistrationControllerTest do
   end
 
   describe "POST /users/register" do
-    @tag :capture_log
     test "creates account and logs the user in", %{conn: conn} do
       email = unique_user_email()
 

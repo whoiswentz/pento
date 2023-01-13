@@ -19,7 +19,7 @@ defmodule PentoWeb.ProductLiveTest do
   end
 
   describe "Index" do
-    setup [:create_product]
+    setup [:register_and_log_in_user, :create_product]
 
     test "lists all products", %{conn: conn, product: product} do
       {:ok, _index_live, html} = live(conn, Routes.product_index_path(conn, :index))
@@ -53,8 +53,9 @@ defmodule PentoWeb.ProductLiveTest do
     test "updates product in listing", %{conn: conn, product: product} do
       {:ok, index_live, _html} = live(conn, Routes.product_index_path(conn, :index))
 
-      assert index_live |> element("#product-#{product.id} a", "Edit") |> render_click() =~
-               "Edit Product"
+      assert index_live
+             |> element("#product-#{product.id} a", "Edit")
+             |> render_click() =~ "Edit Product"
 
       assert_patch(index_live, Routes.product_index_path(conn, :edit, product))
 
@@ -81,7 +82,7 @@ defmodule PentoWeb.ProductLiveTest do
   end
 
   describe "Show" do
-    setup [:create_product]
+    setup [:register_and_log_in_user, :create_product]
 
     test "displays product", %{conn: conn, product: product} do
       {:ok, _show_live, html} = live(conn, Routes.product_show_path(conn, :show, product))

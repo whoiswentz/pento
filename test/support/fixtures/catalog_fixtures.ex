@@ -17,7 +17,7 @@ defmodule Pento.CatalogFixtures do
       attrs
       |> Enum.into(%{
         description: "some description",
-        name: "some name",
+        name: "some game",
         sku: unique_product_sku(),
         unit_price: 120.5
       })

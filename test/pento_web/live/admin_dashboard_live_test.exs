@@ -3,6 +3,10 @@ defmodule PentoWeb.AdminDashboardLiveTest do
 
   import Phoenix.LiveViewTest
 
+  import Pento.CatalogFixtures
+  import Pento.AccountsFixtures
+  import Pento.SurveyFixtures
+
   alias Pento.{Accounts, Survey, Catalog}
 
   @create_product_attrs %{
@@ -34,53 +38,33 @@ defmodule PentoWeb.AdminDashboardLiveTest do
     year_of_birth: DateTime.utc_now().year - 30
   }
 
-  defp product_fixture do
-    {:ok, product} = Catalog.create_product(@create_product_attrs)
-    product
-  end
-
-  defp user_fixture(attrs \\ @create_user_attrs) do
-    {:ok, user} = Accounts.register_user(attrs)
-    user
-  end
-
-  defp demographic_fixture(user, attrs \\ @create_demographic_attrs) do
-    attrs =
-      attrs
-      |> Map.merge(%{user_id: user.id})
-
-    {:ok, demographic} = Survey.create_demographic(attrs)
-    demographic
-  end
-
-  defp rating_fixture(stars, user, product) do
-    {:ok, rating} =
-      Survey.create_rating(%{
-        stars: stars,
-        user_id: user.id,
-        product_id: product.id
-      })
-
-    rating
-  end
-
-  defp create_product(_) do
-    product = product_fixture()
+  defp create_product(attrs \\ @create_product_attrs) do
+    product = product_fixture(attrs)
     %{product: product}
   end
 
-  defp create_user(_) do
+  defp create_user(attrs \\ @create_user_attrs) do
     user = user_fixture()
     %{user: user}
   end
 
   defp create_rating(stars, user, product) do
-    rating = rating_fixture(stars, user, product)
+    rating =
+      rating_fixture(%{
+        stars: stars,
+        user_id: user.id,
+        product_id: product.id
+      })
+
     %{rating: rating}
   end
 
   def create_demographic(user, attrs \\ @create_demographic_attrs) do
-    demographic = demographic_fixture(user, attrs)
+    attrs =
+      attrs
+      |> Map.merge(%{user_id: user.id})
+
+    demographic = demographic_fixture(attrs)
     %{demographic: demographic}
   end
 
@@ -101,7 +85,6 @@ defmodule PentoWeb.AdminDashboardLiveTest do
       :ok
     end
 
-    @tag :only
     test "it filters by age group", %{conn: conn} do
       {:ok, view, _html} = live(conn, "/admin-dashboard")
       age_group_filter = %{"age_group_filter" => "18 and under"}
@@ -109,6 +92,23 @@ defmodule PentoWeb.AdminDashboardLiveTest do
       assert view
              |> element("#age-group-form")
              |> render_change(age_group_filter) =~ "<title>2.00</title>"
+    end
+
+    test "it updates to display newly create ratins", %{
+      conn: conn,
+      product: product
+    } do
+      {:ok, view, html} = live(conn, "/admin-dashboard")
+
+      assert html =~ "<title>2.00</title>"
+
+      user3 = user_fixture(@create_user3_attrs)
+      create_demographic(user3)
+      create_rating(3, user3, product)
+
+      send(view.pid, %{event: "rating_created"})
+
+      assert render(view) =~ "<title>2.50</title>"
     end
   end
 end

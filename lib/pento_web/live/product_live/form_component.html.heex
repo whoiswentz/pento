@@ -31,6 +31,9 @@
     </div>
     <p>Entries</p>
     <%= for entry <- @uploads.image.entries do %>
+      <figure>
+        <%= live_img_preview entry %>
+      </figure>
       <p>
         <%= entry.client_name %> - <% entry.progress %>
         <span class="alert-danger">

@@ -18,7 +18,6 @@ defmodule PentoWeb.UserConfirmationControllerTest do
   end
 
   describe "POST /users/confirm" do
-    @tag :capture_log
     test "sends a new confirmation token", %{conn: conn, user: user} do
       conn =
         post(conn, Routes.user_confirmation_path(conn, :create), %{

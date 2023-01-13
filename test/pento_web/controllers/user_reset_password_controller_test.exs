@@ -18,7 +18,6 @@ defmodule PentoWeb.UserResetPasswordControllerTest do
   end
 
   describe "POST /users/reset_password" do
-    @tag :capture_log
     test "sends a new reset password token", %{conn: conn, user: user} do
       conn =
         post(conn, Routes.user_reset_password_path(conn, :create), %{

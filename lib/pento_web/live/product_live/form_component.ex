@@ -30,6 +30,10 @@ defmodule PentoWeb.ProductLive.FormComponent do
     {:noreply, assign(socket, :changeset, changeset)}
   end
 
+  def handle_event("cancel-upload", %{"ref" => ref}, socket) do
+    {:noreply, cancel_upload(socket, :image, ref)}
+  end
+
   def handle_event("save", %{"product" => product_params}, socket) do
     save_product(socket, socket.assigns.action, product_params)
   end
@@ -60,8 +64,12 @@ defmodule PentoWeb.ProductLive.FormComponent do
     end
   end
 
-  defp product_params(socket, params) do
-    Map.put(params, "image_upload", socket.assigns.image_upload)
+  defp product_params(%{assigns: %{image_upload: image_upload}}, params) do
+    Map.put(params, "image_upload", image_upload)
+  end
+
+  defp product_params(_socket, params) do
+    params
   end
 
   defp handle_progress(:image, entry, socket) do
