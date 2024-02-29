@@ -1,0 +1,14 @@
+version: "3.7"
+
+services:
+  postgres-development:
+    restart: always
+    build: ./postgres
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "postgres" # Calmdown, that's not my password
+    volumes:
+      - $PWD/postgres/postgresql.auto.conf:/etc/postgresql/postgresql.auto.conf
+    #command: postgres -c config_file=/etc/postgresql/postgresql.auto.conf
