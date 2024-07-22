@@ -2,6 +2,13 @@ defmodule PentoWeb.WrongLive do
   use PentoWeb, :live_view
 
   def mount(_params, _session, socket) do
+    socket =
+      socket
+      |> assign(number: 0)
+      |> assign(score: 0)
+      |> assign(won: false)
+      |> assign(message: "Make a guess: ")
+
     case connected?(socket) do
       true ->
         number =
@@ -12,18 +19,10 @@ defmodule PentoWeb.WrongLive do
 
         {:ok,
          socket
-         |> assign(number: number)
-         |> assign(score: 0)
-         |> assign(won: false)
-         |> assign(message: "Make a guess: ")}
+         |> assign(number: number)}
 
       false ->
-        {:ok,
-         socket
-         |> assign(number: 0)
-         |> assign(score: 0)
-         |> assign(won: false)
-         |> assign(message: "Make a guess: ")}
+        {:ok, socket}
     end
   end
 
