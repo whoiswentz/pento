@@ -19,4 +19,19 @@ defmodule Pento.Catalog.Product do
     |> unique_constraint(:sku)
     |> validate_number(:unit_price, greater_than: 0.0)
   end
+
+  def markdown_product(product, attrs) do
+    product
+    |> cast(attrs, [:unit_price])
+    |> validate_change(:unit_price, :decrease_unit_price, fn field, value ->
+      unit_price = get_field(product, :unit_price)
+
+      if unit_price > value,
+        do: [],
+        else: [
+          {field,
+           {"newer unit_price should be lower than the older", [validation: :decrease_unit_price]}}
+        ]
+    end)
+  end
 end
