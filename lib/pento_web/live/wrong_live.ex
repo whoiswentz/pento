@@ -32,12 +32,15 @@ defmodule PentoWeb.WrongLive do
   end
 
   defp reset_game(socket) do
+    user = socket.assigns.current_scope.user
+
     socket
     |> assign(:number, Enum.random(1..10))
     |> assign(:score, 0)
     |> assign(:message, "Make a guess")
     |> assign(:time, time())
     |> assign(:game_is_over, false)
+    |> assign(:current_user, user)
   end
 
   def time do
@@ -65,6 +68,9 @@ defmodule PentoWeb.WrongLive do
             {n}
           </.link>
         <% end %>
+      </h2>
+      <h2>
+        Current User: {@current_user.email}
       </h2>
       <%= if @game_is_over do %>
         <p>You won!</p>
