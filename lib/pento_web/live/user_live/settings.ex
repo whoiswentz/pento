@@ -30,6 +30,20 @@ defmodule PentoWeb.UserLive.Settings do
 
       <div class="divider" />
 
+       <.form for={@username_form} id="username_form" phx-submit="update_username" phx-change="validate_username">
+        <.input
+          field={@username_form[:username]}
+          type="text"
+          label="Username"
+          autocomplete="username"
+          spellcheck="false"
+          required
+        />
+        <.button variant="primary" phx-disable-with="Changing...">Change Username</.button>
+      </.form>
+
+      <div class="divider" />
+
       <.form
         for={@password_form}
         id="password_form"
@@ -87,11 +101,13 @@ defmodule PentoWeb.UserLive.Settings do
     user = socket.assigns.current_scope.user
     email_changeset = Accounts.change_user_email(user, %{}, validate_unique: false)
     password_changeset = Accounts.change_user_password(user, %{}, hash_password: false)
+    username_changeset = Accounts.change_user_username(user)
 
     socket =
       socket
       |> assign(:current_email, user.email)
       |> assign(:email_form, to_form(email_changeset))
+      |> assign(:username_form, to_form(username_changeset))
       |> assign(:password_form, to_form(password_changeset))
       |> assign(:trigger_submit, false)
 
@@ -129,6 +145,33 @@ defmodule PentoWeb.UserLive.Settings do
 
       changeset ->
         {:noreply, assign(socket, :email_form, to_form(changeset, action: :insert))}
+    end
+  end
+
+  def handle_event("validate_username", params, socket) do
+    %{"user" => user_params} = params
+
+    username_form =
+      socket.assigns.current_scope.user
+      |> Accounts.change_user_username(user_params)
+      |> Map.put(:action, :validate)
+      |> to_form()
+
+    {:noreply, assign(socket, username_form: username_form)}
+  end
+
+  def handle_event("update_username", params, socket) do
+    %{"user" => user_params} = params
+    user = socket.assigns.current_scope.user
+    true = Accounts.sudo_mode?(user)
+
+    case Accounts.change_user_username(user, user_params) do
+      %{valid?: true} = changeset ->
+        {:ok, _user} = Accounts.update_user(changeset)
+        {:noreply, socket |> put_flash(:info, "Username changed successfully.")}
+
+      changeset ->
+        {:noreply, assign(socket, :username_form, to_form(changeset, action: :insert))}
     end
   end
 

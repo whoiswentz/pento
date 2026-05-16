@@ -32,15 +32,19 @@ defmodule PentoWeb.WrongLive do
   end
 
   defp reset_game(socket) do
-    user = socket.assigns.current_scope.user
+    scope = socket.assigns.current_scope
+    range = scope.preferences.guess_range
 
     socket
-    |> assign(:number, Enum.random(1..10))
+    |> assign(:number, Enum.random(range))
     |> assign(:score, 0)
     |> assign(:message, "Make a guess")
     |> assign(:time, time())
     |> assign(:game_is_over, false)
-    |> assign(:current_user, user)
+    |> assign(:guess_range, range)
+    |> assign(:role, scope.role)
+    |> assign(:preferences, scope.preferences)
+    |> assign(:current_user, scope.user)
   end
 
   def time do
@@ -59,7 +63,7 @@ defmodule PentoWeb.WrongLive do
       </h2>
       <br />
       <h2>
-        <%= for n <- 1..10 do %>
+        <%= for n <- @guess_range do %>
           <.link
             class="btn btn-secondary"
             phx-click="guess"
@@ -72,6 +76,12 @@ defmodule PentoWeb.WrongLive do
       <h2>
         Current User: {@current_user.email}
       </h2>
+      <h2>
+        Role: {@role} &middot; Difficulty: {@preferences.difficulty} &middot; Theme: {@preferences.theme}
+      </h2>
+      <%= if Pento.Accounts.Scope.admin?(@current_scope) do %>
+        <p class="text-sm text-warning">Admin mode: harder range enabled.</p>
+      <% end %>
       <%= if @game_is_over do %>
         <p>You won!</p>
         <.link patch={~p"/guess"}>Play Again</.link>

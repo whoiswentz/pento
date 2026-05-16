@@ -8,6 +8,7 @@ defmodule Pento.Accounts.User do
     field :hashed_password, :string, redact: true
     field :confirmed_at, :utc_datetime
     field :authenticated_at, :utc_datetime, virtual: true
+    field :username, :string
 
     timestamps(type: :utc_datetime)
   end
@@ -76,6 +77,14 @@ defmodule Pento.Accounts.User do
     |> cast(attrs, [:password])
     |> validate_confirmation(:password, message: "does not match password")
     |> validate_password(opts)
+  end
+
+  def username_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:username])
+    |> validate_required([:username])
+    |> validate_length(:username, min: 3, max: 20)
+    |> unique_constraint(:username)
   end
 
   defp validate_password(changeset, opts) do

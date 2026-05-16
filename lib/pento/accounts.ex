@@ -148,6 +148,20 @@ defmodule Pento.Accounts do
   end
 
   @doc """
+  Returns an `%Ecto.Changeset{}` for changing the user username.
+  """
+  def change_user_username(user, attrs \\ %{}) do
+    User.username_changeset(user, attrs)
+  end
+
+  @doc """
+  Persists a previously-built user changeset.
+  """
+  def update_user(%Ecto.Changeset{} = changeset) do
+    Repo.update(changeset)
+  end
+
+  @doc """
   Updates the user password.
 
   Returns a tuple with the updated user, as well as a list of expired tokens.
