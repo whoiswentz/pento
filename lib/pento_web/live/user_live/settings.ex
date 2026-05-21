@@ -168,7 +168,7 @@ defmodule PentoWeb.UserLive.Settings do
     case Accounts.change_user_username(user, user_params) do
       %{valid?: true} = changeset ->
         {:ok, _user} = Accounts.update_user(changeset)
-        {:noreply, socket |> put_flash(:info, "Username changed successfully.")}
+        {:noreply, put_flash(socket, :info, "Username changed successfully.")}
 
       changeset ->
         {:noreply, assign(socket, :username_form, to_form(changeset, action: :insert))}
