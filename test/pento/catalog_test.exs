@@ -29,7 +29,13 @@ defmodule Pento.CatalogTest do
     end
 
     test "create_product/2 with valid data creates a product" do
-      valid_attrs = %{name: "some name", description: "some description", unit_price: 120.5, sku: 42}
+      valid_attrs = %{
+        name: "some name",
+        description: "some description",
+        unit_price: 120.5,
+        sku: 42
+      }
+
       scope = user_scope_fixture()
 
       assert {:ok, %Product{} = product} = Catalog.create_product(scope, valid_attrs)
@@ -48,7 +54,13 @@ defmodule Pento.CatalogTest do
     test "update_product/3 with valid data updates the product" do
       scope = user_scope_fixture()
       product = product_fixture(scope)
-      update_attrs = %{name: "some updated name", description: "some updated description", unit_price: 456.7, sku: 43}
+
+      update_attrs = %{
+        name: "some updated name",
+        description: "some updated description",
+        unit_price: 456.7,
+        sku: 43
+      }
 
       assert {:ok, %Product{} = product} = Catalog.update_product(scope, product, update_attrs)
       assert product.name == "some updated name"
@@ -92,6 +104,21 @@ defmodule Pento.CatalogTest do
       scope = user_scope_fixture()
       product = product_fixture(scope)
       assert %Ecto.Changeset{} = Catalog.change_product(scope, product)
+    end
+
+    test "markdown_product/2 with a positive decrease lowers the price" do
+      scope = user_scope_fixture()
+      product = product_fixture(scope, %{unit_price: 100.0})
+
+      assert {:ok, %Product{unit_price: 80.0}} = Catalog.markdown_product(product, 20.0)
+    end
+
+    test "markdown_product/2 rejects a price increase" do
+      scope = user_scope_fixture()
+      product = product_fixture(scope, %{unit_price: 100.0})
+
+      assert {:error, %Ecto.Changeset{}} = Catalog.markdown_product(product, -5.0)
+      assert Catalog.get_product!(scope, product.id).unit_price == 100.0
     end
   end
 end
