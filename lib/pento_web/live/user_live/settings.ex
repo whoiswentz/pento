@@ -30,7 +30,12 @@ defmodule PentoWeb.UserLive.Settings do
 
       <div class="divider" />
 
-       <.form for={@username_form} id="username_form" phx-submit="update_username" phx-change="validate_username">
+      <.form
+        for={@username_form}
+        id="username_form"
+        phx-submit="update_username"
+        phx-change="validate_username"
+      >
         <.input
           field={@username_form[:username]}
           type="text"

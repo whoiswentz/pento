@@ -58,7 +58,9 @@ defmodule PentoWeb.ProductLive.Form do
 
   @impl true
   def handle_event("validate", %{"product" => product_params}, socket) do
-    changeset = Catalog.change_product(socket.assigns.current_scope, socket.assigns.product, product_params)
+    changeset =
+      Catalog.change_product(socket.assigns.current_scope, socket.assigns.product, product_params)
+
     {:noreply, assign(socket, form: to_form(changeset, action: :validate))}
   end
 
@@ -67,7 +69,11 @@ defmodule PentoWeb.ProductLive.Form do
   end
 
   defp save_product(socket, :edit, product_params) do
-    case Catalog.update_product(socket.assigns.current_scope, socket.assigns.product, product_params) do
+    case Catalog.update_product(
+           socket.assigns.current_scope,
+           socket.assigns.product,
+           product_params
+         ) do
       {:ok, product} ->
         {:noreply,
          socket
