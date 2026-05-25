@@ -73,5 +73,4 @@ defmodule Pento.Accounts.Scope do
 
   defp permissions_for(:admin), do: [:play_game, :view_settings, :manage_users]
   defp permissions_for(:member), do: [:play_game, :view_settings]
-  defp permissions_for(_), do: []
 end
