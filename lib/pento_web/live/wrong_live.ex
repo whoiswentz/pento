@@ -2,6 +2,11 @@ defmodule PentoWeb.WrongLive do
   use PentoWeb, :live_view
 
   def mount(_params, _session, socket) do
+    if connected?(socket) do
+      Phoenix.PubSub.subscribe(Pento.PubSub, "guess:numbers")
+      Phoenix.PubSub.subscribe(Pento.PubSub, "guess:win")
+    end
+
     {:ok, reset_game(socket)}
   end
 
@@ -11,7 +16,20 @@ defmodule PentoWeb.WrongLive do
 
   def handle_event("guess", %{"number" => guess}, socket) do
     number = socket.assigns.number
+    current_scope = socket.assigns.current_scope.user
     guess = String.to_integer(guess)
+
+    IO.inspect(current_scope)
+
+    Phoenix.PubSub.broadcast(
+      Pento.PubSub,
+      "guess:numbers",
+      {:guess,
+       %{
+         "user" => current_scope.email,
+         "guess" => guess
+       }}
+    )
 
     if number == guess do
       socket =
@@ -19,6 +37,16 @@ defmodule PentoWeb.WrongLive do
         |> assign(:score, socket.assigns.score + 1)
         |> assign(:message, "Correct! The number was #{number}. ")
         |> assign(:game_is_over, true)
+
+      Phoenix.PubSub.broadcast(
+        Pento.PubSub,
+        "guess:win",
+        {:win,
+         %{
+           "user" => current_scope.email,
+           "number" => number
+         }}
+      )
 
       {:noreply, socket}
     else
@@ -29,6 +57,19 @@ defmodule PentoWeb.WrongLive do
 
       {:noreply, socket}
     end
+  end
+
+  def handle_info({:guess, %{"user" => user, "guess" => guess}}, socket) do
+    {:noreply,
+     socket
+     |> put_flash(:info, "User #{user} guessed #{guess}. ")}
+  end
+
+  def handle_info({:win, %{"user" => user, "number" => number}}, socket) do
+    {:noreply,
+     socket
+     |> put_flash(:info, "User #{user} won! The number was #{number}. ")
+     |> assign(:game_is_over, true)}
   end
 
   defp reset_game(socket) do
@@ -54,7 +95,7 @@ defmodule PentoWeb.WrongLive do
 
   def render(assigns) do
     ~H"""
-    <main class="px-4 py-20 sm:px-6 lg:px-8">
+    <Layouts.app flash={@flash} current_scope={@current_scope}>
       <h1 class="mb-4 text-4xl font-extrabold">
         Your score: {@score}
       </h1>
@@ -65,6 +106,7 @@ defmodule PentoWeb.WrongLive do
       <h2>
         <%= for n <- @guess_range do %>
           <.link
+            disabled={@game_is_over}
             class="btn btn-secondary"
             phx-click="guess"
             phx-value-number={n}
@@ -86,7 +128,7 @@ defmodule PentoWeb.WrongLive do
         <p>You won!</p>
         <.link patch={~p"/guess"}>Play Again</.link>
       <% end %>
-    </main>
+    </Layouts.app>
     """
   end
 end

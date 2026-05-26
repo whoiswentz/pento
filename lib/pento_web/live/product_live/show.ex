@@ -7,6 +7,8 @@ defmodule PentoWeb.ProductLive.Show do
   def render(assigns) do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
+      <p class="rounded bg-primary/10 p-3 text-primary">{@message}</p>
+
       <.header>
         Product {@product.id}
         <:subtitle>This is a product record from your database.</:subtitle>
@@ -39,6 +41,7 @@ defmodule PentoWeb.ProductLive.Show do
     {:ok,
      socket
      |> assign(:page_title, "Show Product")
+     |> assign(:message, "Hello from the Show LiveView socket assigns!")
      |> assign(:product, Catalog.get_product!(socket.assigns.current_scope, id))}
   end
 
@@ -62,6 +65,8 @@ defmodule PentoWeb.ProductLive.Show do
 
   def handle_info({type, %Pento.Catalog.Product{}}, socket)
       when type in [:created, :updated, :deleted] do
-    {:noreply, socket}
+    {:noreply,
+     socket
+     |> put_flash(:info, "Product #{type}!")}
   end
 end
