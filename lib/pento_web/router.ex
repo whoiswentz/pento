@@ -39,6 +39,11 @@ defmodule PentoWeb.Router do
       live "/products/new", ProductLive.Form, :new
       live "/products/:id", ProductLive.Show, :show
       live "/products/:id/edit", ProductLive.Form, :edit
+
+      live "/faqs", FaqLive.Index, :index
+      live "/faqs/new", FaqLive.Form, :new
+      live "/faqs/:id", FaqLive.Show, :show
+      live "/faqs/:id/edit", FaqLive.Form, :edit
     end
 
     post "/users/update-password", UserSessionController, :update_password
