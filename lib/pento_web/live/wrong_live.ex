@@ -106,8 +106,7 @@ defmodule PentoWeb.WrongLive do
       <h2>
         <%= for n <- @guess_range do %>
           <.link
-            disabled={@game_is_over}
-            class="btn btn-secondary"
+            class={["btn btn-secondary", @game_is_over && "btn-disabled"]}
             phx-click="guess"
             phx-value-number={n}
           >
