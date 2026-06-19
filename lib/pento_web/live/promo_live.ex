@@ -5,7 +5,26 @@ defmodule PentoWeb.PromoLive do
   alias Pento.Promo
 
   def mount(_params, _session, socket) do
-    {:ok, socket}
+    {:ok,
+     socket
+     |> assign_recipient()
+     |> clear_form()}
+  end
+
+  def assign_recipient(socket) do
+    assign(socket, :recipient, %Recipient{})
+  end
+
+  def clear_form(socket) do
+    changeset =
+      socket.assigns.recipient
+      |> Promo.change_recipient()
+
+    assign_form(socket, changeset)
+  end
+
+  def assign_form(socket, changeset) do
+    assign(socket, :form, to_form(changeset))
   end
 
   def render(assigns) do
